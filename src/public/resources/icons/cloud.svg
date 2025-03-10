@@ -1,0 +1,18 @@
+<svg width="150" height="80" viewBox="0 0 150 80" xmlns="http://www.w3.org/2000/svg">
+    <!-- Corps du nuage -->
+    <path d="M20 40 Q30 20 50 20 Q70 20 80 40 Q90 60 110 60 Q130 60 140 40" 
+          fill="#FFD464" opacity="0.7" stroke="#FF5E5E" stroke-width="2"/>
+    <!-- Petites parties du nuage -->
+    <circle cx="40" cy="30" r="10" fill="#FFD464" opacity="0.7"/>
+    <circle cx="60" cy="25" r="15" fill="#FFD464" opacity="0.7"/>
+    <circle cx="100" cy="45" r="12" fill="#FFD464" opacity="0.7"/>
+    <!-- Effet d'ombre légère -->
+    <filter id="cloudShadow" x="-10%" y="-10%" width="120%" height="120%">
+        <feGaussianBlur in="SourceAlpha" stdDeviation="2"/>
+        <feOffset dx="2" dy="2" result="offsetblur"/>
+        <feBlend in="SourceGraphic" in2="offsetblur" mode="normal"/>
+    </filter>
+    <g filter="url(#cloudShadow)">
+        <use href="#cloudShape" x="0" y="0"/>
+    </g>
+</svg>

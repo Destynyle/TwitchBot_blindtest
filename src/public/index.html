@@ -9,25 +9,35 @@
     <title>TwitchBot - Blindtest</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/libs/jquery.toast.min.css">
+    <!-- Ajout des polices Google Fonts : DotGothic16 et Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Poppins:wght@400;700&display=swap" rel="stylesheet">
 </head>
 
-<body>
+<body class="style-coral-wave">
     <header>
-        <h1>TwitchBot - Blindtest</h1>
+        <h1>TWITCHBOT - BLINDTEST</h1>
     </header>
     <main>
+        <!-- Conteneur décoratif pour les nuages flottants -->
+        <div class="decorative-clouds">
+            <img src="resources/icons/cloud.svg" alt="Nuage" class="cloud cloud-left">
+            <img src="resources/icons/cloud.svg" alt="Nuage" class="cloud cloud-right">
+        </div>
+
         <div id="addSongDiv">
             <div class="inputGroup">
                 <label for="artist">Artiste</label>
-                <input type="text" name="artist" id="artistInput" placeholder="Imagine dragons">
+                <input type="text" name="artist" id="artistInput" placeholder="Junko Yagami ">
             </div>
             <div class="inputGroup">
                 <label for="title">Titre</label>
-                <input type="text" name="title" id="titleInput" placeholder="Sharks">
+                <input type="text" name="title" id="titleInput" placeholder="Bay city">
             </div>
             <div class="inputGroup">
                 <label for="penlity">Pénalité</label>
-                <input type="text" name="penlity" id="penaltyInput" placeholder="U2">
+                <input type="text" name="penlity" id="penaltyInput" placeholder="Stay with me">
             </div>
             <div class="inputGroup">
                 <label for="points">Points</label>
@@ -45,17 +55,15 @@
                             <th></th> <!-- ID -->
                             <th>Artiste</th>
                             <th>Titre</th>
-                            <th>Penalité</th>
+                            <th>Pénalité</th>
                             <th>Points</th>
                             <th></th> <!-- GO -->
-                            <!-- <th></th> Edit -->
                             <th></th> <!-- Delete -->
                         </tr>
                     </thead>
                     <tbody></tbody>
                 </table>
             </div>
-
             <div id="scores">
                 <table>
                     <thead>
@@ -69,11 +77,10 @@
                     <tbody></tbody>
                 </table>
             </div>
-
         </div>
     </main>
 
-    <footer>© 2023 by <a href="https://github.com/LucasDionisi" target="_blank">Lucas Dionisi</a></footer>
+    <footer>© 2025 by DestyNyle for <a href="https://twitch.tv/nya_off" target="_blank">Nya_off</a></footer>
 
     <script src="js/libs/tmi.min.js"></script>
     <script src="js/libs/string-similarity.min.js"></script>

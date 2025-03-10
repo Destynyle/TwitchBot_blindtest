@@ -1,149 +1,530 @@
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f2f2f2;
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-20px); }
+}
+/* Style 1 : Coral Wave (Vibrant) */
+body.style-coral-wave {
+    font-family: "Poppins", sans-serif;
+    background: linear-gradient(to bottom, #FFD464, #FF5E5E, #B0185D);
+    margin: 0;
+    padding: 0;
+    color: #333333;
+    position: relative; /* Nécessaire pour le positionnement des nuages */
+}
+body.style-coral-wave .decorative-clouds {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none; /* Les nuages ne bloquent pas les interactions */
+    z-index: -1; /* Derrière le contenu */
 }
 
-header {
-    color: #333;
-    padding: 10px;
-    margin-bottom: 2em;
+body.style-coral-wave .cloud {
+    position: absolute;
+    opacity: 0.5;
+    width: 150px;
+    animation: float 10s infinite ease-in-out;
+}
+
+body.style-coral-wave .cloud-left {
+    top: 20%;
+    left: 5%;
+}
+
+body.style-coral-wave .cloud-right {
+    top: 50%;
+    right: 5%;
+}
+
+body.style-coral-wave header {
+    color: #FFFFFF;
+    padding: 20px;
     text-align: center;
+    background: rgba(255, 255, 255, 0.2);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
 }
 
-main {
-    max-width: 800px;
+body.style-coral-wave h1 {
+    font-family: "DotGothic16", sans-serif;
+    font-size: 2.5em;
+    color: #FFFFFF;
+    text-shadow: 0 0 5px #E223C6;
+    margin: 0;
+}
+
+body.style-coral-wave main {
+    max-width: 900px;
     margin: 0 auto;
     padding: 20px;
 }
 
-h1 {
-    margin: 0;
-}
-
-a {
-    color: #333;
-}
-
-img.icon {
-    height: 1.5em;
-    cursor: pointer;
-}
-
-img.recording {
-    content: url('/resources/icons/recording.svg');
-    animation: blink 4s linear infinite;
-}
-
-@keyframes blink {
-    0% {
-        opacity: 0;
-    }
-
-    25% {
-        opacity: 1;
-    }
-
-    50% {
-        opacity: 0;
-    }
-
-    75% {
-        opacity: 1;
-    }
-
-    100% {
-        opacity: 0;
-    }
-}
-
-#addSongDiv {
+body.style-coral-wave #addSongDiv {
     display: flex;
     justify-content: center;
     align-items: center;
     margin-bottom: 2em;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 15px;
+    border-radius: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
 }
 
-.inputGroup {
-    display: flex;
-    align-items: center;
+body.style-coral-wave .inputGroup {
     margin-right: 1em;
 }
 
-label,
-input {
-    display: block;
+body.style-coral-wave label {
+    color: #333333;
+    font-weight: 700;
+    margin-right: 0.5em;
 }
 
-input {
-    width: auto;
-    padding: .5em .25em;
-    box-sizing: border-box;
-    background-color: rgba(255, 255, 255, 0.692);
-    border: 1px solid #ccc;
-    margin-left: .5em;
-    border-radius: 5px;
+body.style-coral-wave input {
+    padding: 0.5em;
+    background-color: #FFFFFF;
+    border: 1px solid #E223C6;
+    color: #333333;
+    border-radius: 10px;
+    transition: border-color 0.3s ease;
 }
 
-input[type="number"] {
+body.style-coral-wave input:focus {
+    border-color: #FF5E5E;
+    outline: none;
+}
+
+body.style-coral-wave input[type="number"] {
     width: 4em;
 }
 
-button {
-    background-color: #333;
-    color: rgb(255, 255, 255);
+body.style-coral-wave button {
+    background: linear-gradient(to right, #FFD464, #FF5E5E);
+    color: #FFFFFF;
     padding: 10px 20px;
     border: none;
-    border-radius: 5px;
+    border-radius: 25px;
     cursor: pointer;
+    transition: transform 0.3s ease;
 }
 
-#tables {
+body.style-coral-wave button:hover {
+    transform: scale(1.05);
+}
+
+body.style-coral-wave #tables {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
     display: flex;
     justify-content: center;
+    gap: 20px;
 }
 
-img#hide {
-    position: relative;
-    left: 1em;
-    top: .5em;
+body.style-coral-wave img.icon {
+    height: 1.5em;
+    cursor: pointer;
+    filter: drop-shadow(0 0 5px #FF5E5E);
 }
 
-table {
+body.style-coral-wave table {
     border-collapse: collapse;
+    margin: 10px;
+    background: #FFFFFF;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+body.style-coral-wave th {
+    background-color: #FF5E5E;
+    color: #FFFFFF;
+    padding: 0.5em;
+}
+
+body.style-coral-wave td {
+    border: 1px solid #E223C6;
+    padding: 0.5em;
+    color: #333333;
+    text-align: center;
+}
+
+body.style-coral-wave tr.done {
+    background-color: #e4e1db;
+}
+
+body.style-coral-wave #songlist table.blur {
+    filter: blur(0.7em);
+    transition: filter 0.3s ease;
+}
+
+body.style-coral-wave footer {
+    text-align: center;
     margin-top: 20px;
-    table-layout: auto;
+    color: #FFFFFF;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.2);
 }
 
-div#songlist table {
-    margin-right: 5em;
+body.style-coral-wave footer a {
+    color: #FFD464;
+    text-decoration: none;
+    transition: color 0.3s ease;
 }
 
-div#scores table {
+body.style-coral-wave footer a:hover {
+    color: #FF5E5E;
+}
+
+/* Style 2 : Coral Minimal (Subtil) */
+body.style-coral-minimal {
+    font-family: "Poppins", sans-serif;
+    background: #FFFFFF;
+    margin: 0;
+    padding: 0;
+    color: #333333;
+    position: relative; /* Nécessaire pour le positionnement des nuages */
+}
+
+body.style-coral-minimal .decorative-clouds {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none; /* Les nuages ne bloquent pas les interactions */
+    z-index: -1; /* Derrière le contenu */
+}
+
+body.style-coral-minimal .cloud {
+    position: absolute;
+    opacity: 0.5;
+    width: 150px;
+    animation: float 10s infinite ease-in-out;
+}
+
+body.style-coral-minimal .cloud-left {
+    top: 20%;
+    left: 5%;
+}
+
+body.style-coral-minimal .cloud-right {
+    top: 50%;
+    right: 5%;
+}
+
+body.style-coral-minimal header {
+    color: #333333;
+    padding: 20px;
+    text-align: center;
+    background: linear-gradient(to bottom, #FFD464, #FF5E5E);
+    border-bottom: 1px solid #E223C6;
+}
+
+body.style-coral-minimal h1 {
+    font-family: "DotGothic16", sans-serif;
+    font-size: 2.5em;
+    color: #FFFFFF;
+    margin: 0;
+    display: block;
+}
+
+body.style-coral-minimal main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+body.style-coral-minimal #addSongDiv {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 2em;
+    background: #FFFFFF;
+    padding: 15px;
+    border-radius: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+body.style-coral-minimal .inputGroup {
     margin-right: 1em;
 }
 
-#songlist table.blur {
-    filter: blur(.7em);
+body.style-coral-minimal label {
+    color: #333333;
+    font-weight: 700;
+    margin-right: 0.5em;
 }
 
-th,
-td {
-    border: 1px solid rgb(66, 64, 64);
-    padding: .5em;
+body.style-coral-minimal input {
+    padding: 0.5em;
+    background-color: #FFFFFF;
+    border: 1px solid #E223C6;
+    color: #333333;
+    border-radius: 10px;
+    transition: border-color 0.3s ease;
+}
+
+body.style-coral-minimal input:focus {
+    border-color: #FF5E5E;
+    outline: none;
+}
+
+body.style-coral-minimal input[type="number"] {
+    width: 4em;
+}
+
+body.style-coral-minimal button {
+    background: #FF5E5E;
+    color: #FFFFFF;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+body.style-coral-minimal button:hover {
+    background: #E223C6;
+}
+
+body.style-coral-minimal #tables {
+    background: #FFFFFF;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+body.style-coral-minimal img.icon {
+    height: 1.5em;
+    cursor: pointer;
+    filter: drop-shadow(0 0 5px #E223C6);
+}
+
+body.style-coral-minimal table {
+    border-collapse: collapse;
+    margin: 10px;
+    background: #FFFFFF;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+body.style-coral-minimal th {
+    background-color: #E223C6;
+    color: #FFFFFF;
+    padding: 0.5em;
+}
+
+body.style-coral-minimal td {
+    border: 1px solid #FFD464;
+    padding: 0.5em;
+    color: #333333;
     text-align: center;
 }
 
-th {
-    background-color: rgba(51, 51, 51, 0.856);
-    color: white;
+body.style-coral-minimal tr.done {
+    background-color: #FFD464;
 }
 
-tr.done {
-    background-color: rgba(74, 139, 54, 0.692);
+body.style-coral-minimal #songlist table.blur {
+    filter: blur(0.7em);
+    transition: filter 0.3s ease;
 }
 
-footer {
+body.style-coral-minimal footer {
     text-align: center;
     margin-top: 20px;
-    color: gray;
+    color: #333333;
+    padding: 10px;
+    background: linear-gradient(to top, #FFD464, #FF5E5E);
+}
+
+body.style-coral-minimal footer a {
+    color: #E223C6;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+body.style-coral-minimal footer a:hover {
+    color: #B0185D;
+}
+
+/* Style 3 : Cute Soft */
+body.style-cute-soft {
+    font-family: "Poppins", sans-serif;
+    background: linear-gradient(to bottom, #f5f1fa, #e6e0f0);
+    margin: 0;
+    padding: 0;
+    color: #4a406a;
+}
+body.style-cute-soft 
+header {
+    color: #4a406a;
+    padding: 20px;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.8);
+    border-bottom: 1px solid #b9b8e6;
+}
+
+body.style-cute-soft header .logo {
+    height: 50px;
+    vertical-align: middle;
+    margin-right: 10px;
+    filter: drop-shadow(0 0 5px #a084ca);
+}
+
+body.style-cute-soft h1 {
+    font-family: "DotGothic16", sans-serif;
+    font-size: 2em;
+    font-weight: 700;
+    color: #4a406a;
+    margin: 0;
+}
+
+body.style-cute-soft main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+    position: relative;
+}
+
+body.style-cute-soft .background-decor {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+    opacity: 0.3;
+}
+
+body.style-cute-soft .decor-cloud {
+    position: absolute;
+    top: 10%;
+    left: 10%;
+    width: 150px;
+    opacity: 0.5;
+    animation: float 10s infinite ease-in-out;
+}
+
+body.style-cute-soft #addSongDiv {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 2em;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 15px;
+    border-radius: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+body.style-cute-soft .inputGroup {
+    margin-right: 1em;
+}
+
+body.style-cute-soft label {
+    color: #4a406a;
+    font-weight: 700;
+    margin-right: 0.5em;
+}
+
+body.style-cute-soft input {
+    padding: 0.5em;
+    background-color: #ffffff;
+    border: 1px solid #b9b8e6;
+    color: #4a406a;
+    border-radius: 10px;
+    transition: box-shadow 0.3s ease;
+}
+
+body.style-cute-soft input:focus {
+    box-shadow: 0 0 5px #a084ca;
+    outline: none;
+}
+
+body.style-cute-soft input[type="number"] {
+    width: 4em;
+}
+
+body.style-cute-soft button {
+    background: linear-gradient(to right, #a084ca, #b9b8e6);
+    color: #ffffff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+body.style-cute-soft button:hover {
+    transform: scale(1.05);
+}
+
+body.style-cute-soft #tables {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+body.style-cute-soft img.icon {
+    height: 1.5em;
+    cursor: pointer;
+    filter: drop-shadow(0 0 5px #a084ca);
+}
+
+body.style-cute-soft table {
+    border-collapse: collapse;
+    margin: 10px;
+    background: #ffffff;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+body.style-cute-soft th {
+    background-color: #a084ca;
+    color: #ffffff;
+    padding: 0.5em;
+}
+
+body.style-cute-soft td {
+    border: 1px solid #b9b8e6;
+    padding: 0.5em;
+    color: #4a406a;
+    text-align: center;
+}
+
+body.style-cute-soft tr.done {
+    background-color: #f4c2c2;
+}
+
+body.style-cute-soft #songlist table.blur {
+    filter: blur(0.7em);
+    transition: filter 0.3s ease;
+}
+
+body.style-cute-soft footer {
+    text-align: center;
+    margin-top: 20px;
+    color: #4a406a;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.8);
+}
+
+body.style-cute-soft footer a {
+    color: #a084ca;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+body.style-cute-soft footer a:hover {
+    color: #b9b8e6;
 }
