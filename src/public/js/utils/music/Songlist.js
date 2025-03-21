@@ -1,12 +1,20 @@
 // Singleton, we want only one songlist
+let isSongActive = false;
+let firstResponseTime = null;
+let validResponses = new Set(); // Pour éviter les doublons
+let responseTimeout = null;
 class Songlist {
     static instance = null;
 
     constructor() {
         this.songlist = [];
-        this.threshold = 0.8; // To compare two strings (stringsimilarity)
+        this.threshold = 0.8;
         this.currentSong = -1;
         this.isPlaying = false;
+        this.playersWhoAnswered = new Map(); // Map pour suivre les réponses et les timestamps
+        this.firstArtistTime = null; // Timestamp de la première réponse artiste
+        this.firstTitleTime = null;  // Timestamp de la première réponse titre
+        this.penaltyCount = 0;       // Compteur pour le malus
     }
 
     static getInstance() {
@@ -67,12 +75,38 @@ class Songlist {
     }
 
     setCurrentSong(pCurrentSongIndex) {
-        this.currentSong = pCurrentSongIndex;
-        this.songlist[this.currentSong].isAlreadyPlayed = true;
+        try {
+            const index = parseInt(pCurrentSongIndex);
+            if (isNaN(index) || index < 0 || index >= this.songlist.length) {
+                throw new Error(`Index de chanson invalide : ${pCurrentSongIndex}`);
+            }
+
+            this.currentSong = index;
+            const song = this.songlist[this.currentSong];
+            song.isAlreadyPlayed = true;
+            song.isArtistFound = false;
+            song.isTitleFound = false;
+            song.ispenaltyFound = false;
+            this.playersWhoAnswered.clear();
+            this.firstArtistTime = null;
+            this.firstTitleTime = null;
+            this.penaltyCount = 0;
+            this.isPlaying = true;
+            this.updateServerSongList();
+
+            // Message envoyé via Client
+            const penaltyMessage = song.penalty ? ` Attention, un malus de ${song.points} points est en jeu !` : '';
+            Client.getInstance().sendMessage(`🔔 Une nouvelle manche est en cours, à vos marques, prêt, écrivez !!${penaltyMessage}`);
+        } catch (error) {
+            console.error("Erreur dans setCurrentSong :", error);
+            toastMessage.sendError(`Erreur lors du démarrage de la manche : ${error.message}`);
+        }
+    }
+
+
+    stopCurrentSong() {
+        this.isPlaying = false;
         this.updateServerSongList();
-        this.songlist[this.currentSong].isArtistFound = false;
-        this.songlist[this.currentSong].isTitleFound = false;
-        this.songlist[this.currentSong].ispenaltyFound = false;
     }
 
     getCurrentSong() {
@@ -87,36 +121,77 @@ class Songlist {
         return pResponse;
     }
 
-    checkSong(pMessage) {
+    checkSong(pMessage, username) {
         var response = {
             isOk: false,
-            isAlreadyFound: false
-        }
+            isAlreadyFound: false,
+            isComplete: false
+        };
 
         var song = this.songlist[this.currentSong];
         if (!this.isPlaying || song === undefined) return response;
 
-        if (stringSimilarity.compareTwoStrings(pMessage.toLowerCase(), song.artist.toLowerCase()) > this.threshold) {
-            if (song.isArtistFound) response.isAlreadyFound = true;
+        const now = Date.now();
+        const similarityArtist = stringSimilarity.compareTwoStrings(pMessage.toLowerCase(), song.artist.toLowerCase());
+        const similarityTitle = stringSimilarity.compareTwoStrings(pMessage.toLowerCase(), song.title.toLowerCase());
+        const similarityPenalty = song.penalty ? stringSimilarity.compareTwoStrings(pMessage.toLowerCase(), song.penalty.toLowerCase()) : 0;
+
+        // Vérifie la pénalité (active toute la manche)
+        if (similarityPenalty > this.threshold && !this.playersWhoAnswered.has(`${username}:penalty`)) {
+            this.playersWhoAnswered.set(`${username}:penalty`, now);
+            this.penaltyCount++;
+            const penaltyPoints = -Math.round(song.points * Math.pow(1.5, this.penaltyCount - 1));
+            song.ispenaltyFound = true;
+            return this.buildCheckResponse(response, 'penalty', song.penalty, penaltyPoints);
+        }
+
+        // Vérifie l’artiste
+        if (similarityArtist > this.threshold && !this.playersWhoAnswered.has(`${username}:artist`)) {
+            this.playersWhoAnswered.set(`${username}:artist`, now);
+            if (!this.firstArtistTime) this.firstArtistTime = now;
             song.isArtistFound = true;
 
-            return this.buildCheckResponse(response, 'artist', song.artist, song.points);
+            const timeElapsed = (now - this.firstArtistTime) / 1000; // En secondes
+            let points;
+            if (timeElapsed === 0) {
+                points = song.points; // 100% pour le premier
+            } else if (timeElapsed <= 2) {
+                points = Math.round((2 / 3) * song.points); // 2/3 des points
+            } else if (timeElapsed <= 6) {
+                points = Math.round((1 / 3) * song.points); // 1/3 des points
+            } else {
+                points = 0; // Plus de points après 6 secondes
+            }
+            response = this.buildCheckResponse(response, 'artist', song.artist, points);
         }
 
-        if (stringSimilarity.compareTwoStrings(pMessage.toLowerCase(), song.title.toLowerCase()) > this.threshold) {
-            if (song.isTitleFound) response.isAlreadyFound = true;
+        // Vérifie le titre
+        if (similarityTitle > this.threshold && !this.playersWhoAnswered.has(`${username}:title`)) {
+            this.playersWhoAnswered.set(`${username}:title`, now);
+            if (!this.firstTitleTime) this.firstTitleTime = now;
             song.isTitleFound = true;
 
-            return this.buildCheckResponse(response, 'title', song.title, song.points);
+            const timeElapsed = (now - this.firstTitleTime) / 1000; // En secondes
+            let points;
+            if (timeElapsed === 0) {
+                points = song.points; // 100% pour le premier
+            } else if (timeElapsed <= 2) {
+                points = Math.round((2 / 3) * song.points); // 2/3 des points
+            } else if (timeElapsed <= 6) {
+                points = Math.round((1 / 3) * song.points); // 1/3 des points
+            } else {
+                points = 0; // Plus de points après 6 secondes
+            }
+            response = this.buildCheckResponse(response, 'title', song.title, points);
         }
 
-        if (stringSimilarity.compareTwoStrings(pMessage.toLowerCase(), song.penalty.toLowerCase()) > this.threshold) {
-            if (song.ispenaltyFound) response.isAlreadyFound = true;
-            song.ispenaltyFound = true;
-
-            return this.buildCheckResponse(response, 'penalty', song.penalty, -song.points);
+        // Vérifie si artiste ET titre sont trouvés pour programmer la fin
+        if (song.isArtistFound && song.isTitleFound && !response.isComplete) {
+            setTimeout(() => this.stopCurrentSong(), 6000); // 6 secondes après
+            response.isComplete = true;
         }
 
         return response;
     }
+
 }

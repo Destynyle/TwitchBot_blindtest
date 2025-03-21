@@ -15,7 +15,7 @@
     <link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Poppins:wght@400;700&display=swap" rel="stylesheet">
 </head>
 
-<body class="style-coral-wave">
+<body class="style-hiru-elements">
     <header>
         <h1>TWITCHBOT - BLINDTEST</h1>
     </header>
@@ -26,6 +26,9 @@
             <img src="resources/icons/cloud.svg" alt="Nuage" class="cloud cloud-right">
         </div>
 
+        <!-- Ajout des sirènes comme décorations flottantes -->
+        <img src="resources/icons/sirene.png" alt="Sirène gauche" class="character-decor character-left">
+        <img src="resources/icons/nuage.png" alt="Sirène gauche" class="character-decor character-right">
         <div id="addSongDiv">
             <div class="inputGroup">
                 <label for="artist">Artiste</label>
@@ -80,7 +83,7 @@
         </div>
     </main>
 
-    <footer>© 2025 by DestyNyle for <a href="https://twitch.tv/nya_off" target="_blank">Nya_off</a></footer>
+    <footer>© 2025 by DestyNyle for <a href="https://twitch.tv/hirudeselements" target="_blank">Hiru des elements</a></footer>
 
     <script src="js/libs/tmi.min.js"></script>
     <script src="js/libs/string-similarity.min.js"></script>
@@ -93,6 +96,17 @@
     <script src="js/utils/music/Scoreboard.js"></script>
     <script src="js/script.js"></script>
     <script src="js/utils/bot/Client.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
+    <div class="decorative-clouds">
+        <img src="resources/icons/cloud.svg" alt="Nuage" class="cloud cloud-left">
+        <img src="resources/icons/cloud.svg" alt="Nuage" class="cloud cloud-right">
+    </div>
+    <div class="character-decor character-left"></div> <!-- À remplacer par une image réelle -->
+    <div class="character-decor character-right"></div> <!-- À remplacer par une image réelle -->
+    <div class="wave-decor"></div>
 </body>
+
 
 </html>

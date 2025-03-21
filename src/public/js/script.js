@@ -1,3 +1,5 @@
+
+
 function onClientStrarted() {
 
     $.ajax({
@@ -29,13 +31,12 @@ function onClientStrarted() {
 
 function refreshSongList() {
     const songlist = Songlist.getInstance().getSonglist();
-
     var tabSonglist = $('div#songlist table tbody');
     tabSonglist.empty();
 
+    console.log("Mise à jour de la liste des chansons, nombre d'éléments :", songlist.length);
+
     songlist.forEach((song, index) => {
-        // Possible to add column to edit
-        // <td><img class="icon edit" src="resources/icons/edit.svg" title="edit" alt="edit a song"></td>
         var elem = `
             <tr class="${song.isAlreadyPlayed ? 'done' : ''}">
                 <td>${index + 1}</td>
@@ -43,29 +44,54 @@ function refreshSongList() {
                 <td>${song.title}</td>
                 <td>${song.penalty}</td>
                 <td>${song.points}</td>
-                <td><img class="icon play" src="resources/icons/play.svg" title="GO" alt="start song" data-index="${index}"></td>
-                <td><img class="icon delete" src="resources/icons/delete.svg" title="supprimer" alt="start song" data-index="${index}">
-                </td>
+                <td><img class="icon play${song.isAlreadyPlayed ? ' recording' : ''}" src="resources/icons/${song.isAlreadyPlayed ? 'recording' : 'play'}.svg" title="GO" alt="start song" data-index="${index}"></td>
+                <td><img class="icon delete" src="resources/icons/delete.svg" title="supprimer" alt="delete song" data-index="${index}"></td>
             </tr>
         `;
         tabSonglist.append(elem);
     });
 
-    $('img.play').on('click', function () {
-        Songlist.getInstance().setCurrentSong(this.dataset.index);
-        Client.getInstance().sendMessage(`🔔 Une nouvelle manche est en cours, a vos marques, prêt, écrivez !!`);
-        toastMessage.sendInfo('Nouvelle musique en cours.');
-        this.parentElement.parentElement.classList.add('done');
-        $('.recording').removeClass('recording');
-        this.classList.add('recording');
+    const playButtons = $('img.play');
+    console.log("Nombre de boutons play trouvés :", playButtons.length);
+
+    playButtons.off('click').on('click', function () {
+        const index = this.dataset.index;
+        console.log(`Clic sur play pour l'index : ${index}`);
+        try {
+            Songlist.getInstance().setCurrentSong(index);
+            toastMessage.sendInfo('Nouvelle musique en cours.');
+            this.parentElement.parentElement.classList.add('done');
+            console.log("Classe 'done' ajoutée à la ligne :", this.parentElement.parentElement);
+
+            // Réinitialise tous les boutons "recording" à "play"
+            $('.recording').each(function () {
+                console.log("Réinitialisation d’un bouton recording :", this);
+                this.classList.remove('recording');
+                this.src = 'resources/icons/play.svg';
+            });
+
+            // Applique recording au bouton cliqué
+            this.classList.add('recording');
+            this.src = 'resources/icons/recording.svg';
+            console.log("Bouton après changement - Classe :", this.className, "Src :", this.src);
+
+            // Force un rafraîchissement visuel
+            this.style.display = 'none';
+            this.offsetHeight; // Déclenche un reflow
+            this.style.display = '';
+        } catch (error) {
+            console.error("Erreur lors du clic sur play :", error);
+            toastMessage.sendError("Erreur lors du démarrage de la musique.");
+        }
     });
 
     $('img.delete').on('click', function () {
         Songlist.getInstance().removeSong(this.dataset.index);
         toastMessage.sendInfo('La musique a bien été supprimée.');
         refreshSongList();
-    })
+    });
 }
+
 
 function refreshScoreboard() {
     const scores = Scoreboard.getInstance().getScores();
@@ -109,7 +135,7 @@ $('#addSongBtn').on('click', function () {
 
     for (var i = 0; i < fields.length; i++) {
         var fieldValue = $(fields[i]).val();
-        if (fieldValue === '') {
+        if (fieldValue === ''&& i!==2) {
             $(fields[i]).css('border-color', 'red');
             isValid = false;
         } else {
@@ -140,3 +166,12 @@ $('input').on('input', function () {
 $('img#hide').on('click', function () {
     $("#songlist table").toggleClass("blur");
 });
+
+
+function announceResult(username, solution, isPenalty, points) {
+    const message = isPenalty
+        ? `Hahaha pfff trop nul @${username}, tu es tombé dans le piège ! Le malus était ${solution}. Tu perds ${points} points !`
+        : `Bravo @${username}, tu as trouvé ${solution} ! +${points} points.`;
+    toastMessage.sendInfo(message);
+    Client.getInstance().sendMessage(message);
+}

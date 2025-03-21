@@ -4,16 +4,13 @@ class Client {
     constructor() {
         $.getJSON("config/twitch_credentials.json", (twitchCredentials) => {
             this.initTmiClient(twitchCredentials);
-
             this.songlist = Songlist.getInstance();
             this.cmdMgr = new CommandsManager();
-
             this.songlist.stratGame();
-
-            onClientStrarted(); // onClientStrarteds in script.js
+            onClientStrarted();
 
             this.tmiClient.on('message', (channel, tags, message, self) => {
-                this.onMessage(channel, tags, message, self)
+                this.onMessage(channel, tags, message, self);
             });
         }).fail(() => {
             toastMessage.sendError(`Aucun fichier twitch_credentials.json existant.`);
@@ -46,28 +43,32 @@ class Client {
     }
 
     onMessage(channel, tags, message, self) {
-        // Ignore echoed messages.
         if (self) return;
 
         if (message.startsWith('!')) {
-            const args = message.slice(1).split(' ');
+            const args = message.slice(1).split(' ').map(s => s.trim());
             const command = args.shift().toLowerCase();
-
             this.tmiClient.say(channel, this.cmdMgr.getCommand(command, tags.username));
             return;
         }
 
-        if (this.songlist.isGameStrated()) {
-            var response = this.songlist.checkSong(message);
+        const songlist = Songlist.getInstance();
+        if (songlist.isGameStrated()) {
+            const response = songlist.checkSong(message, tags.username);
 
-            if (response.isOk && !response.isAlreadyFound) {
-                if (response.points < 0) this.tmiClient.say(channel, `Bravo @${tags.username}, tu es tombé dans le piège ! Le malus était bien ${response.solution}. Tu perds ${Math.abs(response.points)} points !`);
-                else this.tmiClient.say(channel, `Bravo @${tags.username}, tu as trouvé ${response.found === 'artist' ? "l'artiste" : "le titre"} qui était ${response.solution} ! Tu marques ${response.points} points.`);
-                Scoreboard.getInstance().score(tags.username, response.points);
+            if (response.isOk) {
+                const points = response.points;
+                Scoreboard.getInstance().score(tags.username, points);
                 refreshScoreboard();
+                announceResult(tags.username, response.solution, points < 0, Math.abs(points));
+
+                if (response.isComplete) {
+                    this.tmiClient.say(channel, `🎉 Artiste et titre trouvés ! ${songlist.getCurrentSong().artist} - ${songlist.getCurrentSong().title}. La manche se termine dans 6 secondes !`);
+                }
             }
         }
     }
+
 
     sendMessage(pMessage) {
         this.channels.forEach(channel => this.tmiClient.say(channel, pMessage));
